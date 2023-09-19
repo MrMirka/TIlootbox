@@ -1,7 +1,7 @@
 import React, { Children } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useEffect, useState } from "react";
-import { TextureLoader, sRGBEncoding, RepeatWrapping } from "three";
+import { TextureLoader, sRGBEncoding, RepeatWrapping, SRGBColorSpace } from "three";
 
 
 const textureLoader = new TextureLoader();
