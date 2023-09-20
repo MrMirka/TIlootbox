@@ -3,14 +3,18 @@ import { useThree } from '@react-three/fiber';
 import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
 import { PMREMGenerator } from 'three';
 
-export default function LightMap({angle}) {
+export default function LightMap({hdriMap}) {
   const { gl, scene } = useThree();
 
+
+/* 
   useEffect(() => {
+    const fileHdri = hdriMap ? hdriMap.name : './textures/Bronze_Silver_Gold_Chest_HDRI.exr';
     const loader = new EXRLoader();
     const pmremGenerator = new PMREMGenerator(gl);
     pmremGenerator.compileEquirectangularShader();
-    loader.load('./textures/Bronze_Silver_Gold_Chest_HDRI.exr', (texture) => {
+    loader.load(fileHdri, (texture) => {
+      console.log(texture)
       const envMap = pmremGenerator.fromEquirectangular(texture).texture;
       scene.environment = envMap;
 
@@ -22,7 +26,43 @@ export default function LightMap({angle}) {
       // Освободите ресурсы, если это необходимо
       pmremGenerator.dispose();
     };
-  }, [gl, scene, angle]);
+  }, [gl, scene, hdriMap]); */
+
+  useEffect(() => {
+    const pmremGenerator = new PMREMGenerator(gl);
+    pmremGenerator.compileEquirectangularShader();
+    const loader = new EXRLoader();
+  
+    if (hdriMap) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataUrl = event.target.result;
+        loader.load(dataUrl, (texture) => {
+          console.log(texture)
+          const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+          scene.environment = envMap;
+    
+          texture.dispose();
+          pmremGenerator.dispose();
+        });
+      };
+      reader.readAsDataURL(hdriMap);
+    } else {
+      loader.load('./textures/Bronze_Silver_Gold_Chest_HDRI.exr', (texture) => {
+        console.log(texture)
+        const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+        scene.environment = envMap;
+  
+        texture.dispose();
+        pmremGenerator.dispose();
+      });
+    }
+  
+    return () => {
+      // Освободите ресурсы, если это необходимо
+      pmremGenerator.dispose();
+    };
+  }, [gl, scene, hdriMap]);
 
   return null;
 }

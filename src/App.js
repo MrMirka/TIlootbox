@@ -7,6 +7,7 @@ import { Canvas } from '@react-three/fiber'
 import LightMap from './components/LightMap';
 import LootBox from './components/Lootbox';
 import ControllersBox from './components/UI/ControllersBox';
+import InputFile from './components/UI/InputFile';
 
 
 
@@ -19,11 +20,11 @@ export default function App() {
    const [animationType, setAnimationType] = useState(animations[0]);
    const [displayAngle, setDisplayAngle] = useState(0); 
    const [isPlay, setIsPlay] = useState(false);
-   //const [angle, setAngle] = useState(0);
+   const [hdriTexture, setHdriTexture] = useState(null);
 
     const angle = useRef(0); 
     const angleInputRef = useRef(null);
-
+    console.log(hdriTexture)
     const callback = (e) => {
       console.log(e)
     }
@@ -56,7 +57,7 @@ export default function App() {
           }}
         >
           <Stats />
-          <LightMap  />
+          <LightMap  hdriMap = {hdriTexture}/>
           
            <LootBox 
             type = {typeLootbox}
@@ -92,7 +93,10 @@ export default function App() {
               step="1"
               defaultValue={angle.current} 
               onChange={hundleAngle}
-/>
+          />
+          <InputFile 
+            setFile = {setHdriTexture}
+          />
           </ControllersBox> 
         </>
     );
