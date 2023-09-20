@@ -1,6 +1,7 @@
 import React from "react";
-import InsertModel from "./InsertModel";
+//import InsertModel from "./InsertModel";
 import GetModel from "./GetModel";
+import InsertAnimModel from "./InsertAnimModel";
 
 
 export default function LootBox({type, callback}) {
@@ -14,7 +15,7 @@ export default function LootBox({type, callback}) {
             {(mesh, textureAlbedo, isReady) => 
                 isReady ? 
                     (<>
-                        <InsertModel
+                        <InsertAnimModel
                             mesh = {mesh}
                             albedo = {textureAlbedo}
                         />

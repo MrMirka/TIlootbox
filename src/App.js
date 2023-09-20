@@ -38,11 +38,11 @@ export default function App() {
           <Stats />
           <LightMap angle = {angle} />
           
-          <LootBox 
+           <LootBox 
             type = {typeLootbox}
             callback = {callback}
-          />   
-       {/*    <AnimationChest /> */}
+          />    
+         
           <OrbitControls />
           </Canvas>
 

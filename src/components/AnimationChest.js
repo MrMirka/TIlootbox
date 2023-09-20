@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { useGLTF, useAnimations, PerspectiveCamera } from "@react-three/drei";
 export default function AnimationChest(props) {
     const group = useRef();
-    const { nodes, materials, animations } = useGLTF("./models/Chests_Animation.gltf");
+    const { nodes, materials, animations } = useGLTF("./models/Chests_Animation2.gltf");
     const { actions } = useAnimations(animations, group);
    
    

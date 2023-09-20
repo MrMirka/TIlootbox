@@ -4,7 +4,7 @@ export default function InsertModel ({mesh, albedo, props}) {
     const newMaterial = useMemo(() => {
         const materialClone = materials.Chest.clone();
         materialClone.map = albedo;
-        materials.Chest.envMapIntensity = 2.5; 
+        materials.Chest.envMapIntensity = 1.5; 
         return materialClone;
       }, [materials, albedo]);
     return (

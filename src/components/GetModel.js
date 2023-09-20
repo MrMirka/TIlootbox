@@ -8,19 +8,19 @@ const textureLoader = new TextureLoader();
 
 const types = {
     gold: {
-        mesh: './models/Regular.gltf',
+        mesh: './models/RegularAnim.gltf',
         albedo: './textures/chest/Gold/Chest_Gold_color_sRGB.jpg'
     },
     silver: {
-        mesh: './models/Regular.gltf',
+        mesh: './models/RegularAnim.gltf',
         albedo: './textures/chest/Silver/Chest_Silver_color_sRGB.jpg'
     },
     bronze: {
-        mesh: './models/Regular.gltf',
+        mesh: './models/RegularAnim.gltf',
         albedo: './textures/chest/Bronze/Chest_Bronze_color_sRGB.jpg'
     },
     diamonds: {
-        mesh: './models/Diamonds.gltf',
+        mesh: './models/DiamondAnim.gltf',
         albedo: './textures/chest/Diamonds/Chest_Base_color_sRGB.jpg',
     },
 };
