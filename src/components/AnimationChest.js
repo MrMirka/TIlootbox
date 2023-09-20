@@ -1,16 +1,17 @@
 import React, { useRef, useEffect } from "react";
 import { useGLTF, useAnimations, PerspectiveCamera } from "@react-three/drei";
+
 export default function AnimationChest(props) {
     const group = useRef();
-    const { nodes, materials, animations } = useGLTF("./models/Chests_Animation2.gltf");
+    const { nodes, materials, animations } = useGLTF("./models/DiamondAnim.gltf");
     const { actions } = useAnimations(animations, group);
    
    
     useEffect(() => {
       console.log(actions)
-      //actions.Zoom.play();
-      actions.Shake.play();
-      actions.Open.play();
+      actions.Zoom.play();
+      //actions.Shake.play();
+      //actions.Open.play();
     }, [actions]);
     return ( 
       <group ref={group} {...props} dispose={null}>

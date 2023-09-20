@@ -32,6 +32,7 @@ export default function  GetModel({type, children, callback}) {
     const [isReady, setIsReady] = useState(false);
     const [textureAlbedo, setTextureAlbedo] = useState(null);
 
+    
     const loadTexture = (url) =>
         new Promise((resolve, reject) => {
             textureLoader.load(
