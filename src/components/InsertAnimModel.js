@@ -4,20 +4,32 @@ import { useAnimations, PerspectiveCamera } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from 'three'
 
-export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, angle,  props}) {
+export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, angle, props}) {
     const group = useRef();
+    const camera = useRef()
     const { nodes, materials, animations } = mesh;
     const { actions } = useAnimations(animations, group);
+    let mouseXY = new THREE.Vector2(0,0)
+    window.addEventListener('mousemove', event => {
+        let x = ( event.clientX - window.innerWidth / 2 ) * 0.0004
+        let y = ( event.clientY - window.innerHeight / 2 ) * 0.0004
+        mouseXY.set(x,y)
+    })
 
     const angleRef = useRef(angle);
     angleRef.current = angle; 
-   console.log( angleRef.current.current)
-
+    
+    
 
      useFrame(()=> {
         if (group.current) {
             group.current.rotation.y = angleRef.current.current * (Math.PI / 180) ;
           }
+          if(mouseXY && camera.current) {
+            camera.current.rotation.x += ( mouseXY.y * 0.07 - camera.current.rotation.x * 0.4 ) * 1.3
+            camera.current.rotation.y += ( mouseXY.x  * 0.15 - camera.current.rotation.y * 0.3 ) * 1.5
+          }
+          
     }) 
 
 
@@ -28,12 +40,6 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
         return materialClone;
       }, [materials, albedo]);
 
-      useFrame(()=> {
-        if (group.current) {
-            //group.current.rotation.y += 0.003;
-            //group.current.rotation.y = hdriAngel ;
-          }
-      })
 
       useEffect(() => {
          actions.Zoom.stop();
@@ -52,10 +58,6 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
             actions.Shake.play();
             actions.Open.play();
         }
-         
-       //actions.Zoom.play();
-        //actions.Shake.play();
-         //actions.Open.play();
       }, [actions, animationType, isPlay]);
 
     return (
@@ -71,22 +73,24 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
                 rotation={[-0.32, -0.604, -0.186]}
                 scale={0.961}
                 />
-                <mesh
-                name="Chest_Bottom"
-                castShadow
-                receiveShadow
-                geometry={nodes.Chest_Bottom.geometry}
-                material={newMaterial}
-                >
-                <mesh
-                    name="Chest_Cap"
+                <group ref={camera} {...props} dispose={null}>
+                    <mesh
+                    name="Chest_Bottom"
                     castShadow
                     receiveShadow
-                    geometry={nodes.Chest_Cap.geometry}
+                    geometry={nodes.Chest_Bottom.geometry}
                     material={newMaterial}
-                    position={[0, 0.651, -0.385]}
-                />
-                </mesh>
+                    >
+                    <mesh
+                        name="Chest_Cap"
+                        castShadow
+                        receiveShadow
+                        geometry={nodes.Chest_Cap.geometry}
+                        material={newMaterial}
+                        position={[0, 0.651, -0.385]}
+                    />
+                    </mesh>
+                </group>
                 
             </group>
         </group>

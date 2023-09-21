@@ -8,19 +8,19 @@ const textureLoader = new TextureLoader();
 
 const types = {
     gold: {
-        mesh: './models/RegularAnim.gltf',
+        mesh: './models/regular/Regular.gltf',
         albedo: './textures/chest/Gold/Chest_Gold_color_sRGB.jpg'
     },
     silver: {
-        mesh: './models/RegularAnim.gltf',
+        mesh: './models/regular/Regular.gltf',
         albedo: './textures/chest/Silver/Chest_Silver_color_sRGB.jpg'
     },
     bronze: {
-        mesh: './models/RegularAnim.gltf',
+        mesh: './models/regular/Regular.gltf',
         albedo: './textures/chest/Bronze/Chest_Bronze_color_sRGB.jpg'
     },
     diamonds: {
-        mesh: './models/DiamondAnim.gltf',
+        mesh: './models/diamond/Diamond.gltf',
         albedo: './textures/chest/Diamonds/Chest_Base_color_sRGB.jpg',
     },
 };
@@ -42,12 +42,12 @@ export default function  GetModel({type, children, callback}) {
                 texture.wrapS = RepeatWrapping;
                 texture.wrapT = RepeatWrapping;
                 setTextureAlbedo(texture);
-                console.log('Текстра загружена')
+               // console.log('Текстра загружена')
                 resolve();
             },
             undefined,
             (error) => {
-                callback("Ошибка загрузки Albedo")
+                //callback("Ошибка загрузки Albedo")
                 reject(error)
             }
             );
@@ -57,12 +57,17 @@ export default function  GetModel({type, children, callback}) {
         Promise.all([
             loadTexture(types[type].albedo).then(()=>{
                 if(mesh) {
-                    callback("Модель загружена")
                     setIsReady(true)
                 } 
             })
         ])
     }, [mesh, type])
+
+    useEffect(()=>{
+        if(isReady) {
+            callback("Модель загружена")
+        }
+    },[isReady])
    
 
     return children(mesh, textureAlbedo, isReady);

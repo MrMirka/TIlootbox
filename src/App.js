@@ -8,6 +8,7 @@ import LightMap from './components/LightMap';
 import LootBox from './components/Lootbox';
 import ControllersBox from './components/UI/ControllersBox';
 import InputFile from './components/UI/InputFile';
+import ModelLoader from './components/UI/ModelLoader';
 
 
 
@@ -21,19 +22,28 @@ export default function App() {
    const [displayAngle, setDisplayAngle] = useState(0); 
    const [isPlay, setIsPlay] = useState(false);
    const [hdriTexture, setHdriTexture] = useState(null);
+   const [isBackground, setisBackground] = useState(false);
+   const [isLoading, setIsLoading] = useState(true)
 
     const angle = useRef(0); 
     const angleInputRef = useRef(null);
-    console.log(hdriTexture)
+    
     const callback = (e) => {
       console.log(e)
+      setIsLoading(false)
+    
     }
     const handlerLootboxType = (e) => {
       setTypeLootbox(e.target.value)
+      //setIsLoading(true)
     }
 
     const hundleAnimation = (e) => {
       setAnimationType(e.target.value)
+    }
+
+    const handleCheckboxChange = (e) => {
+      setisBackground(e.target.checked)
     }
 
     const hundleOnPlay = () => {
@@ -57,15 +67,15 @@ export default function App() {
           }}
         >
           <Stats />
-          <LightMap  hdriMap = {hdriTexture}/>
-          
-           <LootBox 
+          <LightMap  hdriMap = {hdriTexture} isBackground = {isBackground}/>
+
+          <LootBox 
             type = {typeLootbox}
             animationType = {animationType}
             isPlay = {isPlay}
             angle = {angle}
             callback = {callback}
-          />    
+          />  
           </Canvas>
         </Suspense>
         <ControllersBox>
@@ -94,10 +104,18 @@ export default function App() {
               defaultValue={angle.current} 
               onChange={hundleAngle}
           />
+          <input
+            type="checkbox"
+            checked={isBackground}
+            onChange={handleCheckboxChange}
+         />
+         
           <InputFile 
             setFile = {setHdriTexture}
           />
+          
           </ControllersBox> 
+          {isLoading && <ModelLoader />}
         </>
     );
 }

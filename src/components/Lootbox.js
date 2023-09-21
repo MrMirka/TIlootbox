@@ -19,7 +19,6 @@ export default function LootBox({type, animationType, isPlay,  angle, callback})
                             animationType = {animationType}
                             isPlay = {isPlay}
                             angle = {angle}
-                            
                         />
                     </>) 
                 : null}

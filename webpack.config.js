@@ -24,7 +24,7 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(gltf|bin)$/,
+        test: /\.(gltf|bin|glb)$/,
         type: 'asset/resource',
         generator: {
             filename: 'models/[name][hash][ext]'

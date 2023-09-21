@@ -3,7 +3,7 @@ import { useThree } from '@react-three/fiber';
 import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
 import { PMREMGenerator } from 'three';
 
-export default function LightMap({hdriMap}) {
+export default function LightMap({hdriMap, isBackground}) {
   const { gl, scene } = useThree();
 
 
@@ -41,6 +41,12 @@ export default function LightMap({hdriMap}) {
           console.log(texture)
           const envMap = pmremGenerator.fromEquirectangular(texture).texture;
           scene.environment = envMap;
+          if(isBackground) {
+            scene.background = envMap;
+          } else {
+            scene.background = null;
+          }
+          
     
           texture.dispose();
           pmremGenerator.dispose();
@@ -52,6 +58,11 @@ export default function LightMap({hdriMap}) {
         console.log(texture)
         const envMap = pmremGenerator.fromEquirectangular(texture).texture;
         scene.environment = envMap;
+        if(isBackground) {
+          scene.background = envMap;
+        } else {
+          scene.background = null;
+        }
   
         texture.dispose();
         pmremGenerator.dispose();
@@ -62,7 +73,7 @@ export default function LightMap({hdriMap}) {
       // Освободите ресурсы, если это необходимо
       pmremGenerator.dispose();
     };
-  }, [gl, scene, hdriMap]);
+  }, [gl, scene, hdriMap, isBackground]);
 
   return null;
 }
