@@ -281,7 +281,7 @@
 			]
 		},
 		{
-			"name":"Chest_Bottom_D",
+			"name":"Chest_Bottom",
 			"primitives":[
 				{
 					"attributes":{
@@ -323,18 +323,18 @@
 	"images":[
 		{
 			"mimeType":"image/jpeg",
-			"name":"Chest_Emissive_sRGB",
-			"uri":"Chest_Emissive_sRGB.jpg"
+			"name":"Chest_Diamonds_Emissive_2048px_Compressed",
+			"uri":"Chest_Diamonds_Emissive_2048px_Compressed.jpg"
+		},
+		{
+			"mimeType":"image/jpeg",
+			"name":"Chest_Diamonds_Normal_2048px_Compressed",
+			"uri":"Chest_Diamonds_Normal_2048px_Compressed.jpg"
 		},
 		{
 			"mimeType":"image/png",
-			"name":"Chest_Normal_OpenGL_Raw",
-			"uri":"Chest_Normal_OpenGL_Raw.png"
-		},
-		{
-			"mimeType":"image/png",
-			"name":"Chest_Metallic_Raw.jpg-Chest_Roughness_Raw.jpg",
-			"uri":"Chest_Metallic_Raw_jpg-Chest_Roughness_Raw_jpg.png"
+			"name":"Chest_Diamonds_Metallic_2048px_Compressed-Chest_Diamonds_Roughness_2048px_Compressed",
+			"uri":"Chest_Diamonds_Metallic_2048px_Compressed-Chest_Diamonds_Roughness_2048px_Compressed.png"
 		}
 	],
 	"accessors":[

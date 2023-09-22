@@ -22,7 +22,8 @@ const types = {
     diamonds: {
         mesh: './models/diamond/Diamond.gltf',
         albedo: './textures/chest/Diamonds/Chest_Base_color_sRGB.jpg',
-    },
+    }
+   
 };
 
 
@@ -58,6 +59,7 @@ export default function  GetModel({type, children, callback}) {
             loadTexture(types[type].albedo).then(()=>{
                 if(mesh) {
                     setIsReady(true)
+                    callback("Модель загружена")
                 } 
             })
         ])
@@ -65,7 +67,7 @@ export default function  GetModel({type, children, callback}) {
 
     useEffect(()=>{
         if(isReady) {
-            callback("Модель загружена")
+            //callback("Модель загружена")
         }
     },[isReady])
    

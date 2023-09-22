@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Suspense } from "react";
 import { OrbitControls } from '@react-three/drei';
 import { Stats } from "@react-three/drei";
@@ -9,6 +9,7 @@ import LootBox from './components/Lootbox';
 import ControllersBox from './components/UI/ControllersBox';
 import InputFile from './components/UI/InputFile';
 import ModelLoader from './components/UI/ModelLoader';
+import PostEffect from './components/VFX/PostEffect';
 
 
 
@@ -25,8 +26,58 @@ export default function App() {
    const [isBackground, setisBackground] = useState(false);
    const [isLoading, setIsLoading] = useState(true)
 
-    const angle = useRef(0); 
+   //Effects
+   const[lum, setLum] = useState(0)
+   const[smoo, setSmoo] = useState(0)
+   const[bloo, setBluu] = useState(0)
+
+   //Lights
+   const [pointInside, setPointInside] = useState(0)
+   const [lDistance, setLdistance] = useState(0.01)
+   const [pX, setPx] = useState(0)
+   const [pY, setPy] = useState(0)
+   const [pZ, setPz] = useState(0)
+
+   const handlePx = (e) => {
+    setPx(e.target.value)
+   }
+   const handlePy = (e) => {
+    setPy(e.target.value)
+   }
+   const handlePz = (e) => {
+    setPz(e.target.value)
+   }
+
+
+   const handlePointInside = (e) => {
+    setPointInside(e.target.value)
+   }
+
+   const handlePointDistance = (e) => {
+    setLdistance(e.target.value)
+   }
+
+
+   const  handleLum = (e) => {
+    setLum(e.target.value)
+   }
+
+   const  handSmoo = (e) => {
+    setSmoo(e.target.value)
+   }
+
+   const  handleBloo = (e) => {
+    setBluu(e.target.value)
+   }
+   
+   //Controls
+   const [displayIntensity, setdisplayIntensity] = useState(0);
+
+    const angle = useRef(270); 
     const angleInputRef = useRef(null);
+
+    const intensity = useRef(0); 
+    const intensityInputRef = useRef(null);
     
     const callback = (e) => {
       console.log(e)
@@ -35,7 +86,7 @@ export default function App() {
     }
     const handlerLootboxType = (e) => {
       setTypeLootbox(e.target.value)
-      //setIsLoading(true)
+      setIsLoading(true)
     }
 
     const hundleAnimation = (e) => {
@@ -56,26 +107,46 @@ export default function App() {
       setDisplayAngle(e.target.value);
     }
 
+    const hundleIntensity = (e) => {
+      intensity.current = e.target.value;
+      intensityInputRef.current.value = e.target.value;
+      setdisplayIntensity(e.target.value);
+    }
+
+    useEffect(()=>{
+      console.log(isLoading)
+    },[isLoading])
+
     return(
       <>
+      {isLoading && <ModelLoader />}
+     
       <Suspense fallback={null}>
         <Canvas 
-          gl={{
+          /* gl={{
             alpha: true,
             //toneMapping: THREE.ACESFilmicToneMapping,
             outputEncoding: THREE.sRGBEncoding
-          }}
+          }} */
+          gl={{ logarithmicDepthBuffer: true, antialias: false, alpha: true, }}
+          dpr={[2, 3]}
         >
           <Stats />
-          <LightMap  hdriMap = {hdriTexture} isBackground = {isBackground}/>
+          <LightMap  hdriMap = {hdriTexture} isBackground = {isBackground}/> 
+
+          <pointLight position = {[pX, pY, pZ]} intensity={pointInside} distance={lDistance}/>
+          <sphereGeometry position = {[pX, pY, pZ]} scale={2} />
+          
 
           <LootBox 
             type = {typeLootbox}
             animationType = {animationType}
             isPlay = {isPlay}
             angle = {angle}
+            intensity = {intensity}
             callback = {callback}
           />  
+          <PostEffect lum = {lum} smoo = {smoo} bloo = {bloo}/>
           </Canvas>
         </Suspense>
         <ControllersBox>
@@ -86,13 +157,7 @@ export default function App() {
               ))}
             </select>
             <br />
-           {/*  <p>Тип анимации</p>
-              <select onChange={hundleAnimation}>
-              {animations.map((anim) => (
-                <option key={anim}>{anim}</option>
-              ))}
-            </select> */}
-            <button onClick={hundleOnPlay}>{!isPlay ? 'Play' :'Stop'}</button>
+             <button onClick={hundleOnPlay}>{!isPlay ? 'Play' :'Stop'}</button> 
             <br/>
              <p>Угол поворота сцены: {displayAngle}</p>
              <input
@@ -113,9 +178,94 @@ export default function App() {
           <InputFile 
             setFile = {setHdriTexture}
           />
+          <p>Интенсивность освещение: {displayIntensity}</p>
+             <input
+              ref={intensityInputRef}
+              type="range"
+              min="0"
+              max="2"
+              step="0.1"
+              defaultValue={intensity.current} 
+              onChange={hundleIntensity}
+          />
+
+          <p>luminanse: {lum}</p>
+             <input
+              type="range"
+              min="0"
+              max="5"
+              step="0.1"
+              defaultValue={lum} 
+              onChange={handleLum}
+          />
+
+          <p>smooth: {smoo}</p>
+             <input
+              type="range"
+              min="0"
+              max="5"
+              step="0.1"
+              defaultValue={smoo} 
+              onChange={handSmoo}
+          />
+           <p>intensity: {bloo}</p>
+             <input
+              type="range"
+              min="0"
+              max="5"
+              step="0.1"
+              defaultValue={bloo} 
+              onChange={handleBloo}
+          />
+
+          <p>Свечение внутри сундука: {pointInside}</p>
+             <input
+              type="range"
+              min="0"
+              max="10"
+              step="0.1"
+              defaultValue={pointInside} 
+              onChange={handlePointInside}
+          />
+          <p>Дистанция свеченияа: {lDistance}</p>
+             <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.001"
+              defaultValue={lDistance} 
+              onChange={handlePointDistance}
+          />
+
+            <p>X: {pX}</p>
+             <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.02"
+              defaultValue={pX} 
+              onChange={handlePx}
+          />
+           <p>Y: {pY}</p>
+             <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.02"
+              defaultValue={pY} 
+              onChange={handlePy}
+          />
+           <p>Z: {pZ}</p>
+             <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.02"
+              defaultValue={pZ} 
+              onChange={handlePz}
+          />
           
           </ControllersBox> 
-          {isLoading && <ModelLoader />}
         </>
     );
 }

@@ -54,7 +54,7 @@ export default function LightMap({hdriMap, isBackground}) {
       };
       reader.readAsDataURL(hdriMap);
     } else {
-      loader.load('./textures/Bronze_Silver_Gold_Chest_HDRI.exr', (texture) => {
+      loader.load('./textures/hdri/Chest_HDRI_Grey_2.exr', (texture) => {
         console.log(texture)
         const envMap = pmremGenerator.fromEquirectangular(texture).texture;
         scene.environment = envMap;

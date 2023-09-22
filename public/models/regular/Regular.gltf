@@ -273,7 +273,7 @@
 			]
 		},
 		{
-			"name":"Chest_Bottom_D.001",
+			"name":"Chest_Bottom",
 			"primitives":[
 				{
 					"attributes":{
@@ -310,14 +310,14 @@
 	],
 	"images":[
 		{
-			"mimeType":"image/png",
-			"name":"Chest_Normal_OpenGL_Raw",
-			"uri":"Chest_Normal_OpenGL_Raw.png"
+			"mimeType":"image/jpeg",
+			"name":"Chest_Normal_2048px_Compressed",
+			"uri":"Chest_Normal_2048px_Compressed.jpg"
 		},
 		{
 			"mimeType":"image/png",
-			"name":"Chest_Metallic_Raw.jpg-Chest_Roughness_Raw.jpg",
-			"uri":"Chest_Metallic_Raw_jpg-Chest_Roughness_Raw_jpg.png"
+			"name":"Chest_Metallic_2048px_Compressed-Chest_Roughness_2048px_Compressed",
+			"uri":"Chest_Metallic_2048px_Compressed-Chest_Roughness_2048px_Compressed.png"
 		}
 	],
 	"accessors":[

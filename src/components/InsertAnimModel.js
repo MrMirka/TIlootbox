@@ -4,11 +4,12 @@ import { useAnimations, PerspectiveCamera } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from 'three'
 
-export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, angle, props}) {
+export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, angle, intensity,  props}) {
     const group = useRef();
     const camera = useRef()
     const { nodes, materials, animations } = mesh;
     const { actions } = useAnimations(animations, group);
+    
     let mouseXY = new THREE.Vector2(0,0)
     window.addEventListener('mousemove', event => {
         let x = ( event.clientX - window.innerWidth / 2 ) * 0.0004
@@ -18,27 +19,36 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
 
     const angleRef = useRef(angle);
     angleRef.current = angle; 
-    
-    
 
-     useFrame(()=> {
-        if (group.current) {
-            group.current.rotation.y = angleRef.current.current * (Math.PI / 180) ;
-          }
-          if(mouseXY && camera.current) {
-            camera.current.rotation.x += ( mouseXY.y * 0.07 - camera.current.rotation.x * 0.4 ) * 1.3
-            camera.current.rotation.y += ( mouseXY.x  * 0.15 - camera.current.rotation.y * 0.3 ) * 1.5
-          }
-          
-    }) 
+    const intensityRef = useRef(intensity);
+    intensityRef.current = intensity; 
+    
+    
 
 
     const newMaterial = useMemo(() => {
         const materialClone = materials.Chest.clone();
         materialClone.map = albedo;
-        materials.Chest.envMapIntensity = 1.5; 
+        materials.Chest.envMapIntensity = intensityRef.current.current; 
         return materialClone;
       }, [materials, albedo]);
+
+
+     useFrame(()=> {
+
+        if(newMaterial) {
+            newMaterial.envMapIntensity = intensityRef.current.current; 
+        }
+        
+        if (group.current) {
+            group.current.rotation.y = angleRef.current.current * (Math.PI / 180) ;
+          }
+          if(mouseXY && camera.current) {
+            //camera.current.rotation.x += ( mouseXY.y * 0.07 - camera.current.rotation.x * 0.4 ) * 1.3
+            camera.current.rotation.y += ( mouseXY.x  * 0.15 - camera.current.rotation.y * 0.3 ) * 1.5
+          }
+          
+    }) 
 
 
       useEffect(() => {
@@ -76,15 +86,15 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
                 <group ref={camera} {...props} dispose={null}>
                     <mesh
                     name="Chest_Bottom"
-                    castShadow
-                    receiveShadow
+                    castShadow 
+                    receiveShadow 
                     geometry={nodes.Chest_Bottom.geometry}
                     material={newMaterial}
                     >
                     <mesh
                         name="Chest_Cap"
-                        castShadow
-                        receiveShadow
+                        castShadow  
+                        receiveShadow 
                         geometry={nodes.Chest_Cap.geometry}
                         material={newMaterial}
                         position={[0, 0.651, -0.385]}

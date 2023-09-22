@@ -4,7 +4,7 @@ import GetModel from "./GetModel";
 import InsertAnimModel from "./InsertAnimModel";
 
 
-export default function LootBox({type, animationType, isPlay,  angle, callback}) {
+export default function LootBox({type, animationType, isPlay,  angle, intensity, callback}) {
     return (
          <GetModel
             type= {type}
@@ -19,6 +19,7 @@ export default function LootBox({type, animationType, isPlay,  angle, callback})
                             animationType = {animationType}
                             isPlay = {isPlay}
                             angle = {angle}
+                            intensity = {intensity}
                         />
                     </>) 
                 : null}
