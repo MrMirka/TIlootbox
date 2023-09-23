@@ -3,10 +3,13 @@ import React, { useRef, useEffect, useMemo, useState } from "react";
 import { useAnimations, PerspectiveCamera } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from 'three'
+import Ray from "./VFX/Ray";
 
 export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, angle, intensity,  props}) {
     const group = useRef();
     const camera = useRef()
+    const meshRef = useRef();
+    const rayRef = useRef();
     const { nodes, materials, animations } = mesh;
     const { actions } = useAnimations(animations, group);
     
@@ -30,11 +33,17 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
         const materialClone = materials.Chest.clone();
         materialClone.map = albedo;
         materials.Chest.envMapIntensity = intensityRef.current.current; 
+        materials.Chest.depthWrite = true
         return materialClone;
       }, [materials, albedo]);
 
 
      useFrame(()=> {
+
+        if (rayRef.current && meshRef.current) {
+            rayRef.current.position.copy(meshRef.current.position);
+            console.log(meshRef.current.position)
+        }
 
         if(newMaterial) {
             newMaterial.envMapIntensity = intensityRef.current.current; 
@@ -71,20 +80,26 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
       }, [actions, animationType, isPlay]);
 
     return (
+        <>
+      
         <group ref={group} {...props} dispose={null}>
+            
             <group name="Scene">
+           
                 <PerspectiveCamera
                 name="Cam_Anim_Baked"
                 makeDefault={true}
                 far={1000}
-                near={0.1}
+                near={1}
                 fov={14.426}
                 position={[-8.858, 3.692, 12.192]}
                 rotation={[-0.32, -0.604, -0.186]}
                 scale={0.961}
                 />
                 <group ref={camera} {...props} dispose={null}>
+                <Ray ref={rayRef} position={[-1, 0.38, 0]} rotation = {[0,-Math.PI,0]} scale = {0.35}/>
                     <mesh
+                    ref={meshRef}
                     name="Chest_Bottom"
                     castShadow 
                     receiveShadow 
@@ -92,6 +107,7 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
                     material={newMaterial}
                     >
                     <mesh
+                    ref={meshRef}
                         name="Chest_Cap"
                         castShadow  
                         receiveShadow 
@@ -101,9 +117,12 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
                     />
                     </mesh>
                 </group>
-                
+               
             </group>
         </group>
+       
+        </>
+
     );
 }
 

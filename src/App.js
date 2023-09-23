@@ -10,6 +10,9 @@ import ControllersBox from './components/UI/ControllersBox';
 import InputFile from './components/UI/InputFile';
 import ModelLoader from './components/UI/ModelLoader';
 import PostEffect from './components/VFX/PostEffect';
+import WebGlHandler from './components/system/WebGlHandler';
+import { isMobile } from 'react-device-detect';
+import Ray from './components/VFX/Ray';
 
 
 
@@ -27,9 +30,9 @@ export default function App() {
    const [isLoading, setIsLoading] = useState(true)
 
    //Effects
-   const[lum, setLum] = useState(0)
-   const[smoo, setSmoo] = useState(0)
-   const[bloo, setBluu] = useState(0)
+   const[lum, setLum] = useState(0.1)
+   const[smoo, setSmoo] = useState(0.2)
+   const[bloo, setBluu] = useState(1.6)
 
    //Lights
    const [pointInside, setPointInside] = useState(0)
@@ -76,7 +79,7 @@ export default function App() {
     const angle = useRef(270); 
     const angleInputRef = useRef(null);
 
-    const intensity = useRef(0); 
+    const intensity = useRef(0.5); 
     const intensityInputRef = useRef(null);
     
     const callback = (e) => {
@@ -122,22 +125,18 @@ export default function App() {
       {isLoading && <ModelLoader />}
      
       <Suspense fallback={null}>
+       
         <Canvas 
-          /* gl={{
-            alpha: true,
-            //toneMapping: THREE.ACESFilmicToneMapping,
-            outputEncoding: THREE.sRGBEncoding
-          }} */
-          gl={{ logarithmicDepthBuffer: true, antialias: false, alpha: true, }}
-          dpr={[2, 3]}
+          gl={{ logarithmicDepthBuffer: false, antialias: false, alpha: true, }}
+          dpr={[1, 2]}
         >
+          <WebGlHandler />
           <Stats />
+       
           <LightMap  hdriMap = {hdriTexture} isBackground = {isBackground}/> 
 
           <pointLight position = {[pX, pY, pZ]} intensity={pointInside} distance={lDistance}/>
-          <sphereGeometry position = {[pX, pY, pZ]} scale={2} />
-          
-
+         {/*  {!isLoading &&  <Ray position={[pX, 0.38, -0.82]} rotation = {[0,Math.PI/2,0]} scale = {0.35}/>} */}
           <LootBox 
             type = {typeLootbox}
             animationType = {animationType}
@@ -146,7 +145,10 @@ export default function App() {
             intensity = {intensity}
             callback = {callback}
           />  
-          <PostEffect lum = {lum} smoo = {smoo} bloo = {bloo}/>
+         
+          
+          { !isMobile && (<PostEffect lum = {lum} smoo = {smoo} bloo = {bloo}/>) }
+          
           </Canvas>
         </Suspense>
         <ControllersBox>
@@ -189,26 +191,26 @@ export default function App() {
               onChange={hundleIntensity}
           />
 
-          <p>luminanse: {lum}</p>
+          <p>Bloom luminanse: {lum}</p>
              <input
               type="range"
               min="0"
-              max="5"
-              step="0.1"
+              max="1"
+              step="0.01"
               defaultValue={lum} 
               onChange={handleLum}
           />
 
-          <p>smooth: {smoo}</p>
+          <p>Bloom smooth: {smoo}</p>
              <input
               type="range"
               min="0"
-              max="5"
-              step="0.1"
+              max="1"
+              step="0.01"
               defaultValue={smoo} 
               onChange={handSmoo}
           />
-           <p>intensity: {bloo}</p>
+           <p>Bloom intensity: {bloo}</p>
              <input
               type="range"
               min="0"
@@ -240,8 +242,8 @@ export default function App() {
             <p>X: {pX}</p>
              <input
               type="range"
-              min="0"
-              max="1"
+              min="-3"
+              max="3"
               step="0.02"
               defaultValue={pX} 
               onChange={handlePx}
@@ -249,8 +251,8 @@ export default function App() {
            <p>Y: {pY}</p>
              <input
               type="range"
-              min="0"
-              max="1"
+              min="-3"
+              max="3"
               step="0.02"
               defaultValue={pY} 
               onChange={handlePy}
@@ -258,8 +260,8 @@ export default function App() {
            <p>Z: {pZ}</p>
              <input
               type="range"
-              min="0"
-              max="1"
+              min="-3"
+              max="3"
               step="0.02"
               defaultValue={pZ} 
               onChange={handlePz}
