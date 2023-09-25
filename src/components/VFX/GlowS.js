@@ -13,6 +13,7 @@ const glowShader = {
   },
   vertexShader: `
       varying vec2 vUv;
+      
   
       void main() {
         vUv = uv;
@@ -24,19 +25,16 @@ const glowShader = {
     varying vec2 vUv;
     uniform sampler2D rayTexture;
 
-    vec2 randomVec2(vec2 co) {
-      return vec2(fract(sin(dot(co, vec2(12.9898,78.233))) * 43758.5453),
-                  fract(cos(dot(co, vec2(12.9898,78.233))) * 43758.5453));
-    }
-
-    float noise(vec2 p) {
-      vec2 i = floor(p);
-      vec2 f = fract(p);
-      vec2 u = f * f * (3.0 - 2.0 * f);
-      return mix(mix(dot(randomVec2(i), f - vec2(0.0,0.0)),
-                     dot(randomVec2(i + vec2(1.0,0.0)), f - vec2(1.0,0.0)), u.x),
-                 mix(dot(randomVec2(i + vec2(0.0,1.0)), f - vec2(0.0,1.0)),
-                     dot(randomVec2(i + vec2(1.0,1.0)), f - vec2(1.0,1.0)), u.x), u.y);
+    float random(float x) {
+      return fract(sin(x) * 43758.5453);
+   }
+  
+    float noise(float x) {
+        float i = floor(x);
+        float f = fract(x);
+        float a = random(i);
+        float b = random(i + 1.0);
+        return mix(a, b, f);
     }
 
     void main(){
@@ -44,6 +42,30 @@ const glowShader = {
       if (uv.y < 0.5) {
         uv.y = 0.0;
       }
+
+      // Вычисление угла и радиуса в полярных координатах
+      vec2 uv2 = uv * 2.0 - 1.0;
+
+      float angle = atan(uv2.y, uv2.x) / (2.0 * 3.14159265359);
+      angle = angle < 0.0 ? angle + 1.0 : angle;
+      float rad = length(uv2);
+  
+      int index = int(angle * 100.0);
+  
+      // Используем шум вместо случайного значения
+      float lineLength = noise(float(index) + uTime * 0.5 );
+  
+      //vec3 color = vec3(mod(float(index), 2.0), mod(float(index), 5.0), mod(float(index), 9.0)) / 9.0;
+      vec3 color = vec3(0.9, 0.53, 0.15);
+      float thickness = smoothstep(0.1, 0.2, 1.0 - rad) * 0.01 + 0.04;
+  
+      vec4 outputColor;
+      if (rad < lineLength && abs(mod(angle * 50.0, 1.0) - 0.5) < thickness) {
+          outputColor = vec4(color, 1.0);
+      } else {
+          outputColor = vec4(0.0, 0.0, 0.0, 1.0);
+      }
+      
 
       vec2 pos = 0.5 -uv;
       float dist = 1.0/length(pos);
@@ -63,11 +85,17 @@ const glowShader = {
       
       vec4 ray =  texture(rayTexture, uv);
       col_1 += ray.r;
+      col_1 += outputColor.r * 0.01;
+      //col_1 += outputColor.g;
+      //col_1 += outputColor.b;
+   
 
       float alpha = max(col_1.r, max(col_1.g, col_1.b)); 
-      float finalAlpha = mix(0.0, 1.0, pow(alpha, 22.0));
+      float finalAlpha = mix(0.0, 1.0, pow(alpha, 28.0));
 
       gl_FragColor = vec4(col_1, finalAlpha);
+      //gl_FragColor =outputColor;
+     
     }
     `
 };
