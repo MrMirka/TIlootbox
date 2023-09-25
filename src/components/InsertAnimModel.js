@@ -4,6 +4,8 @@ import { useAnimations, PerspectiveCamera } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from 'three'
 import Ray from "./VFX/Ray";
+import GlowS from "./VFX/GlowS";
+
 
 export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, angle, intensity,  props}) {
     const group = useRef();
@@ -42,7 +44,7 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
 
         if (rayRef.current && meshRef.current) {
             rayRef.current.position.copy(meshRef.current.position);
-            console.log(meshRef.current.position)
+           
         }
 
         if(newMaterial) {
@@ -98,6 +100,8 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
                 />
                 <group ref={camera} {...props} dispose={null}>
                 <Ray ref={rayRef} position={[-1, 0.38, 0]} rotation = {[0,-Math.PI,0]} scale = {0.35}/>
+                <GlowS position={[0,0.467,0]} rotation = {[0 ,-0.6, 0]}/>
+               
                     <mesh
                     ref={meshRef}
                     name="Chest_Bottom"

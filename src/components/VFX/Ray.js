@@ -87,8 +87,7 @@ const Ray = forwardRef(({ position, rotation, scale }, ref) => {
         blendEquation={THREE.AddEquation}
         blendSrc={THREE.SrcAlphaFactor}
         blendDst={THREE.OneMinusSrcAlphaFactor}
-        depthWrite={false} // Changed this to false
-        //depthTest={false}  // Added this line to disable depth testing
+        depthWrite={false} 
         ref={material}
         attach="material"
         args={[rayShader]}

@@ -14,6 +14,8 @@ import WebGlHandler from './components/system/WebGlHandler';
 import { isMobile } from 'react-device-detect';
 import Ray from './components/VFX/Ray';
 
+import GlowS from './components/VFX/GlowS';
+
 
 
 const lootBoxTypes = ['diamonds', 'gold', 'silver', 'bronze'];
@@ -122,7 +124,8 @@ export default function App() {
 
     return(
       <>
-      {isLoading && <ModelLoader />}
+      {isLoading && <ModelLoader />} 
+    
      
       <Suspense fallback={null}>
        
@@ -136,7 +139,7 @@ export default function App() {
           <LightMap  hdriMap = {hdriTexture} isBackground = {isBackground}/> 
 
           <pointLight position = {[pX, pY, pZ]} intensity={pointInside} distance={lDistance}/>
-         {/*  {!isLoading &&  <Ray position={[pX, 0.38, -0.82]} rotation = {[0,Math.PI/2,0]} scale = {0.35}/>} */}
+        
           <LootBox 
             type = {typeLootbox}
             animationType = {animationType}
@@ -147,7 +150,10 @@ export default function App() {
           />  
          
           
-          { !isMobile && (<PostEffect lum = {lum} smoo = {smoo} bloo = {bloo}/>) }
+        {/*   { !isMobile && (<PostEffect lum = {lum} smoo = {smoo} bloo = {bloo}/>) } */}
+          {/* <InsideGlow /> */}
+          
+
           
           </Canvas>
         </Suspense>

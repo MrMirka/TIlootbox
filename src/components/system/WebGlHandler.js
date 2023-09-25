@@ -6,6 +6,7 @@ function WebGlHandler() {
     useEffect(()=>{
         function handleContextLost(event) {
             event.preventDefault();
+            console.log('Context lost')
         }
 
         function handleContextRestored(event) {
