@@ -99,7 +99,7 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
                 scale={0.961}
                 />
                 <group ref={camera} {...props} dispose={null}>
-                <Ray ref={rayRef} position={[-1, 0.38, 0]} rotation = {[0,-Math.PI,0]} scale = {0.35}/>
+                <Ray ref={rayRef} position={[42, 0.38, 0]} rotation = {[0,-Math.PI,0]} scale = {1}/>
                 <GlowS position={[0,0.467,0]} rotation = {[0 ,-0.6, 0]}/>
                
                     <mesh

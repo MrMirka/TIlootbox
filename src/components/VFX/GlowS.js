@@ -21,6 +21,9 @@ const glowShader = {
       }
     `,
   fragmentShader: `
+    #ifdef GL_ES
+    precision lowp float;
+    #endif
     uniform float uTime;
     varying vec2 vUv;
     uniform sampler2D rayTexture;
@@ -85,7 +88,7 @@ const glowShader = {
       
       vec4 ray =  texture(rayTexture, uv);
       col_1 += ray.r;
-      col_1 += outputColor.r * 0.01;
+      col_1 += outputColor.r * 0.0075;
       //col_1 += outputColor.g;
       //col_1 += outputColor.b;
    
@@ -126,7 +129,7 @@ export default function GlowS({position, rotation}) {
     <mesh ref={mesh} scale={1} position={position} rotation = {rotation}>
       <planeGeometry args={[1, 0.5]} />
       <shaderMaterial
-      side={THREE.DoubleSide}
+        side={THREE.DoubleSide}
         transparent
         ref={material}
         attach="material"

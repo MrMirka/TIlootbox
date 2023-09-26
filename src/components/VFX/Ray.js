@@ -22,45 +22,52 @@ const rayShader = {
     uniform float uTime;
     varying vec2 vUv;
   
-    vec2 randomVec2(vec2 co) {
-      return vec2(fract(sin(dot(co, vec2(12.9898,78.233))) * 43758.5453),
-                  fract(cos(dot(co, vec2(12.9898,78.233))) * 43758.5453));
+    // Функция поворота вектора
+    vec2 rotate(vec2 v, float a) {
+        float s = sin(a);
+        float c = cos(a);
+        return vec2(c * v.x - s * v.y, s * v.x + c * v.y);
     }
+
+    vec4 createCone(vec2 uv, vec2 source, float coneAngle, float distMultiplier, float fadeOutMultiplier, float rotationAngle) {
+      vec2 toUV = rotate(uv - source, rotationAngle);
+      float angle = atan(toUV.y, toUV.x);
+      float dist = length(toUV);
+      float brightness = 1.0 / (0.1 + dist * distMultiplier);
+      float fadeOut = 1.0 - smoothstep(0.0, fadeOutMultiplier, dist);
   
-    float noise(vec2 p) {
-      vec2 i = floor(p);
-      vec2 f = fract(p);
-      vec2 u = f * f * (3.0 - 2.0 * f);
-      return mix(mix(dot(randomVec2(i), f - vec2(0.0,0.0)),
-                     dot(randomVec2(i + vec2(1.0,0.0)), f - vec2(1.0,0.0)), u.x),
-                 mix(dot(randomVec2(i + vec2(0.0,1.0)), f - vec2(0.0,1.0)),
-                     dot(randomVec2(i + vec2(1.0,1.0)), f - vec2(1.0,1.0)), u.x), u.y);
-    }
+      // Начальный и конечный цвета.
+      vec3 colorStart = vec3(0.9, 0.53, 0.15); 
+      vec3 colorEnd = vec3(1.2, 0.15, 0.2); 
+  
+      // Интерполяция цвета на основе расстояния с использованием smoothstep
+      float t = smoothstep(0.0, 1.0, dist / fadeOutMultiplier);
+      vec3 color = mix(colorStart, colorEnd, t);
+    
+      if (abs(angle) < coneAngle) {
+          return vec4(color * brightness, fadeOut);
+      } else {
+          return vec4(0.0, 0.0, 0.0, 0.0);
+      }
+  }
+  
   
     void main() {
-        vec2 uv = vUv * 2.0 - 1.0;
-      vec2 lightDir = vec2(-1.8, 0.0);
+     
+      vec2 uv = vUv;
+     
+      vec4 cone1 = createCone(uv, vec2(0.0, 0.5), radians(23.0), 0.6, 0.40, 0.0);
+      vec4 coneGlow = createCone(uv, vec2(0.0, 0.5), radians(23.0), 222.3, 0.30, 0.0);
       
-      float angle = atan(uv.y - lightDir.y, uv.x - lightDir.x);
-      float dist = length(uv - lightDir);
-      
-      float n = noise(uv * 3.3 - vec2(uTime * 0.5));
-      float animatedAngle = angle + n * 0.1;
-      float animatedDist = dist + n * 0.1;
-  
-      float intensity = smoothstep(0.32, 0.0, abs(animatedAngle)) / (animatedDist + 0.3);
-      
-      float falloff = 1.0 - smoothstep(0.0, 1.0, abs(animatedAngle) / 0.6);
+     
+      vec4 cone2 = createCone(uv, vec2(0.0, 0.5), radians(5.0), 0.7, 0.23, radians(5.0)); 
 
-      float rightFalloff = 1.0 - smoothstep(0.27, 2.0, 1.0 + uv.x );
-      falloff *= rightFalloff;
+      vec4 cone3 = createCone(uv, vec2(0.0, 0.5), radians(0.3), 0.7, 0.34, radians(22.0)); 
+      vec4 cone4 = createCone(uv, vec2(0.0, 0.5), radians(0.2), 0.7, 0.33, radians(-22.0)); 
       
-      intensity *= falloff;
-      
-      
-      vec3 col = intensity * vec3(1.0, 0.9, 0.0);
-      float alpha = intensity;
-      gl_FragColor = vec4(col, alpha);
+     
+      gl_FragColor = (cone2 * 0.08) + (cone3 * 1.3)  + (cone4 * 3.5) + cone1 + coneGlow * 9.66;
+     
     }
     `  
 }
@@ -78,8 +85,8 @@ const Ray = forwardRef(({ position, rotation, scale }, ref) => {
 
   return (
     <group ref={ref} position={position} rotation={rotation}>
-    <mesh ref={mesh} scale={scale} position={[1, 0.37, 0]} >
-      <planeGeometry args={[4, 3]} />
+    <mesh ref={mesh} scale={scale} position={[1.4, 0.37, 0]} >
+      <planeGeometry args={[4, 1]} />
       <shaderMaterial
         side={THREE.DoubleSide}
         transparent={true}
