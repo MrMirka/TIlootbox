@@ -16,20 +16,17 @@ export default function LightMap({envExist}) {
         scene.environment = envMap;
         texture.dispose();
         pmremGenerator.dispose();
+        envExist(true)
       } else {
         envExist(false)
       }
       
     });
-    
+
     return () => {
       pmremGenerator.dispose();
     };
   }, [gl, scene]);
-
-  useEffect(()=> {
-      envExist(true)
-  }, [scene.environment])
 
   return null;
 }
