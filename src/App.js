@@ -52,6 +52,9 @@ export default function App() {
       setIsPlay((v) => !v)
     }
 
+    /**
+     * Отключаем лоудер когда готовы данные
+     */
     useEffect(()=> {
       if(modelReady && envReady) {
         setIsLoading(false)
@@ -76,6 +79,8 @@ export default function App() {
           />  
           </Canvas>
         </Suspense>
+        /
+
         <ControllersBox>
               <select onChange={handlerLootboxType}>
               {lootBoxTypes.map((lootbox) => (
@@ -85,7 +90,7 @@ export default function App() {
             <br />
              <button onClick={hundleOnPlay}>{!isPlay ? 'Play' :'Stop'}</button> 
             <br/>
-          </ControllersBox> 
+        </ControllersBox> 
         </>
     );
 }
