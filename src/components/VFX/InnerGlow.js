@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, forwardRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from 'three'
 import { TextureLoader } from "three";
@@ -103,7 +103,7 @@ const glowShader = {
     `
 };
 
-export default function GlowS({position, rotation}) {
+const InnerGlow = forwardRef(({position, rotation},ref) => {
   const textureLoader = new TextureLoader();
   const [updateMat, setUpdateMat] = useState(false)
   const mesh = useRef();
@@ -120,21 +120,24 @@ export default function GlowS({position, rotation}) {
 
   useEffect (()=> {
       if(updateMat) {
-          console.log('run')
           material.current.uniforms.rayTexture.value = textureGlow;
       }
   }, [textureGlow])
 
   return (
-    <mesh ref={mesh} scale={1} position={position} rotation = {rotation}>
-      <planeGeometry args={[1, 0.5]} />
-      <shaderMaterial
-        side={THREE.DoubleSide}
-        transparent
-        ref={material}
-        attach="material"
-        args={[glowShader]}
-      />
-    </mesh>
+    <group ref={ref} position={position} rotation={rotation}>
+      <mesh ref={mesh} scale={1} position={[0,0.467,0]} rotation = {[0 ,-0.6, 0]}>
+        <planeGeometry args={[1, 0.5]} />
+        <shaderMaterial
+          side={THREE.DoubleSide}
+          transparent
+          ref={material}
+          attach="material"
+          args={[glowShader]}
+        />
+      </mesh>
+    </group>
   );
-}
+});
+
+export default InnerGlow;

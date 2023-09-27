@@ -4,11 +4,11 @@ import GetModel from "./GetModel";
 import InsertAnimModel from "./InsertAnimModel";
 
 
-export default function LootBox({type, animationType, isPlay,  angle, intensity, callback}) {
+export default function LootBox({type, isPlay, modelExist, isOpen}) {
     return (
          <GetModel
             type= {type}
-            callback = {callback}
+            modelExist = {modelExist}
         >
             {(mesh, textureAlbedo, isReady) => 
                 isReady ? 
@@ -16,10 +16,8 @@ export default function LootBox({type, animationType, isPlay,  angle, intensity,
                         <InsertAnimModel
                             mesh = {mesh}
                             albedo = {textureAlbedo}
-                            animationType = {animationType}
                             isPlay = {isPlay}
-                            angle = {angle}
-                            intensity = {intensity}
+                            isOpen = {isOpen}
                         />
                     </>) 
                 : null}

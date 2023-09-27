@@ -4,14 +4,15 @@ import { useAnimations, PerspectiveCamera } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from 'three'
 import Ray from "./VFX/Ray";
-import GlowS from "./VFX/GlowS";
+import InnerGlow from "./VFX/InnerGlow";
 
 
-export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, angle, intensity,  props}) {
+export default function InsertAnimModel ({mesh, albedo, isPlay, isOpen, props}) {
     const group = useRef();
     const camera = useRef()
     const meshRef = useRef();
     const rayRef = useRef();
+    const innerGlowRef = useRef();
     const { nodes, materials, animations } = mesh;
     const { actions } = useAnimations(animations, group);
     
@@ -22,19 +23,10 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
         mouseXY.set(x,y)
     })
 
-    const angleRef = useRef(angle);
-    angleRef.current = angle; 
-
-    const intensityRef = useRef(intensity);
-    intensityRef.current = intensity; 
-    
-    
-
-
     const newMaterial = useMemo(() => {
         const materialClone = materials.Chest.clone();
         materialClone.map = albedo;
-        materials.Chest.envMapIntensity = intensityRef.current.current; 
+        materials.Chest.envMapIntensity = 1; 
         materials.Chest.depthWrite = true
         return materialClone;
       }, [materials, albedo]);
@@ -46,21 +38,18 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
             rayRef.current.position.copy(meshRef.current.position);
            
         }
-
-        if(newMaterial) {
-            newMaterial.envMapIntensity = intensityRef.current.current; 
+        if (innerGlowRef.current && meshRef.current) {
+            innerGlowRef.current.position.copy(meshRef.current.position);
         }
-        
+
         if (group.current) {
-            group.current.rotation.y = angleRef.current.current * (Math.PI / 180) ;
+            group.current.rotation.y = 270 * (Math.PI / 180) ;
           }
-          if(mouseXY && camera.current) {
-            //camera.current.rotation.x += ( mouseXY.y * 0.07 - camera.current.rotation.x * 0.4 ) * 1.3
+          if(mouseXY && camera.current && !isPlay) {
             camera.current.rotation.y += ( mouseXY.x  * 0.15 - camera.current.rotation.y * 0.3 ) * 1.5
           }
           
     }) 
-
 
       useEffect(() => {
          actions.Zoom.stop();
@@ -79,15 +68,21 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
             actions.Shake.play();
             actions.Open.play();
         }
-      }, [actions, animationType, isPlay]);
+      }, [actions, isPlay]);
+
+      useEffect(() => {
+        if (isPlay) {
+            const timer = setTimeout(() => {
+                isOpen()
+            }, 3 * 1000); 
+            return () => clearTimeout(timer);
+        }
+    }, [actions, isPlay]);
 
     return (
         <>
-      
-        <group ref={group} {...props} dispose={null}>
-            
+        <group ref={group} {...props} dispose={null}> 
             <group name="Scene">
-           
                 <PerspectiveCamera
                 name="Cam_Anim_Baked"
                 makeDefault={true}
@@ -100,8 +95,7 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
                 />
                 <group ref={camera} {...props} dispose={null}>
                 <Ray ref={rayRef} position={[42, 0.38, 0]} rotation = {[0,-Math.PI,0]} scale = {1}/>
-                <GlowS position={[0,0.467,0]} rotation = {[0 ,-0.6, 0]}/>
-               
+                 <InnerGlow ref={innerGlowRef}/>
                     <mesh
                     ref={meshRef}
                     name="Chest_Bottom"
@@ -121,10 +115,8 @@ export default function InsertAnimModel ({mesh, albedo, animationType, isPlay, a
                     />
                     </mesh>
                 </group>
-               
             </group>
         </group>
-       
         </>
 
     );

@@ -23,12 +23,9 @@ const types = {
         mesh: './models/diamond/Diamond.gltf',
         albedo: './textures/chest/Diamonds/Chest_Base_color_sRGB.jpg',
     }
-   
 };
 
-
-
-export default function  GetModel({type, children, callback}) {
+export default function  GetModel({type, children, modelExist}) {
     const mesh = useGLTF(types[type].mesh);
     const [isReady, setIsReady] = useState(false);
     const [textureAlbedo, setTextureAlbedo] = useState(null);
@@ -43,12 +40,10 @@ export default function  GetModel({type, children, callback}) {
                 texture.wrapS = RepeatWrapping;
                 texture.wrapT = RepeatWrapping;
                 setTextureAlbedo(texture);
-               // console.log('Текстра загружена')
                 resolve();
             },
             undefined,
             (error) => {
-                //callback("Ошибка загрузки Albedo")
                 reject(error)
             }
             );
@@ -59,18 +54,13 @@ export default function  GetModel({type, children, callback}) {
             loadTexture(types[type].albedo).then(()=>{
                 if(mesh) {
                     setIsReady(true)
-                    callback("Модель загружена")
-                } 
+                    modelExist(true)
+                } else {
+                    modelExist(false)
+                }
             })
         ])
     }, [mesh, type])
-
-    useEffect(()=>{
-        if(isReady) {
-            //callback("Модель загружена")
-        }
-    },[isReady])
-   
 
     return children(mesh, textureAlbedo, isReady);
 }
