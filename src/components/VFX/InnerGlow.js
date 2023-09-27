@@ -89,16 +89,11 @@ const glowShader = {
       vec4 ray =  texture(rayTexture, uv);
       col_1 += ray.r;
       col_1 += outputColor.r * 0.0075;
-      //col_1 += outputColor.g;
-      //col_1 += outputColor.b;
-   
-
+      
       float alpha = max(col_1.r, max(col_1.g, col_1.b)); 
       float finalAlpha = mix(0.0, 1.0, pow(alpha, 28.0));
 
       gl_FragColor = vec4(col_1, finalAlpha);
-      //gl_FragColor =outputColor;
-     
     }
     `
 };
