@@ -55,7 +55,7 @@ const rayShader = {
     void main() {
      
       vec2 uv = vUv;
-      vec4 coneGlow = createCone(uv, vec2(0.0, 0.5), radians(23.0), 222.3, 0.30, 0.0);
+      vec4 coneGlow = createCone(uv, vec2(0.0, 0.5), radians(23.0), 222.3, 0.304, 0.0);
 
       vec4 cone1 = createCone(uv, vec2(0.0, 0.5), radians(23.0), 0.6, 0.40, 0.0);
       vec4 cone2 = createCone(uv, vec2(0.0, 0.5), radians(5.0), 0.7, 0.23, radians(5.0)); 
@@ -76,7 +76,7 @@ const rayShader = {
                       (cone8 * 0.08) + 
                       (cone9 * 0.33) + 
                       cone1 + 
-                      coneGlow * 9.66;
+                      coneGlow * 9.66 ;
     }
     `  
 }
@@ -95,11 +95,6 @@ const Ray = forwardRef(({ position, rotation, scale }, ref) => {
       <shaderMaterial
         side={THREE.DoubleSide}
         transparent={true}
-        blending={THREE.CustomBlending}
-        blendEquation={THREE.AddEquation}
-        blendSrc={THREE.SrcAlphaFactor}
-        blendDst={THREE.OneMinusSrcAlphaFactor}
-        depthWrite={false} 
         ref={material}
         attach="material"
         args={[rayShader]}

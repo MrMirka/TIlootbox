@@ -10,7 +10,8 @@
   }
  
   #root {
-    background: #000000;
+   background-color: black;
+    background-image: url('./textures/bg-desktop.png');
     width: 100%;
     height: 100%;
     margin: 0;
